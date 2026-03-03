@@ -1,11 +1,24 @@
-// TODO: Import express, morgan, and your config/middleware/routes files
-// TODO: Create the Express app
-// TODO: Configure the middleware chain:
-//   1. morgan("dev") — HTTP request logger
-//   2. cors — Allow requests from the frontend
-//   3. express.json() — Parse JSON request bodies
-//   4. clearBody — Remove protected fields (_id, createdAt, updatedAt)
-//   5. checkAuth — Verify session cookie and attach user to request
-// TODO: Mount the router under "/api"
-// TODO: Add the error handler middleware (must be last)
-// TODO: Start the server on the configured PORT
+import express from "express";
+import morgan from "morgan";
+
+import "./config/db.config.js";
+
+import router from "./config/routes.config.js";
+
+//import { errorHandler } from "./middlewares/errors.middleware.js";
+
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+app.use(morgan("dev"));
+
+app.use('api', router);
+
+//app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
