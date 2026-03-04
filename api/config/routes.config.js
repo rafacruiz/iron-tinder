@@ -10,8 +10,8 @@ router.post('/auth/login', User.login);
 router.delete('/auth/logout', User.logout);
 router.get('/auth/verify', User.verify);
 
-router.get('/profile', User.verify);
-router.patch('/profile', User.profile);
+router.get('/profile/:id', User.profile);
+router.patch('/profile', User.update);
 
 router.use((req, res) => {
   throw new createHttpError(404, "Route Not Found");

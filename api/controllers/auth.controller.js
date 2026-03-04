@@ -43,13 +43,23 @@ export async function logout(req, res) {
 }
 
 export async function verify(req, res) {
-
-    const sessionUser = await Session.findById(req.session.id).populate('user');
-
-    res.json(sessionUser);
+    res.json(req.session.user);
 }
 
 export async function profile(req, res) {
+    
+    if (req.params.id === 'me') {
+        res.json(req.session.user);
+    } else { 
+        const user = await User.findById(req.params.id);
+
+        if (!user) throw createError(404, 'User not found');
+
+        res.json(user);
+    }  
+}
+
+export async function update(req, res) {
     
     Object.assign(req.session.user, req.body);
 
