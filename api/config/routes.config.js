@@ -13,6 +13,8 @@ router.get('/auth/verify', User.verify);
 router.get('/profile/:id', User.profile);
 router.patch('/profile', User.update);
 
+router.get('/suggestions', User.suggestions);
+
 router.use((req, res) => {
   throw new createHttpError(404, "Route Not Found");
 });

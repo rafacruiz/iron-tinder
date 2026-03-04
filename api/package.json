@@ -4,13 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "node --env-file .env --watch app.js",
-    "start": "node --env-file .env app.js"
+    "start": "node --env-file .env app.js",
+    "seed": "node --env-file .env bin/seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^10.3.0",
     "bcrypt": "^6.0.0",
     "express": "^5.2.1",
     "http-errors": "^2.0.1",

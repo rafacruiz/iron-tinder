@@ -67,3 +67,21 @@ export async function update(req, res) {
 
     res.json(req.session.user);
 }
+
+export async function suggestions(req, res) {
+
+    const user = req.session.user;
+
+    const criteria = {
+        _id: { $ne: user.id, $nin: [...user.likedUsers, ...user.passedUsers] },
+        age: { $gte: user.preferences.ageMin, $lte: user.preferences.ageMax },
+    };
+    
+    if (user.preferences.gender !== "everyone") {
+        criteria.gender = user.preferences.gender;
+    }
+
+    const suggestions = await User.find(criteria);
+
+    res.json(suggestions);
+}
