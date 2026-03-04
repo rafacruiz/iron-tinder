@@ -10,6 +10,9 @@ router.post('/auth/login', User.login);
 router.delete('/auth/logout', User.logout);
 router.get('/auth/verify', User.verify);
 
+router.get('/profile', User.verify);
+router.patch('/profile', User.profile);
+
 router.use((req, res) => {
   throw new createHttpError(404, "Route Not Found");
 });
@@ -21,7 +24,6 @@ export default router;
 // TODO: Define all API routes:
 //
 //   Profile:
-//     GET    /profile
 //     PATCH  /profile
 //
 //   Suggestions:

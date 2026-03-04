@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema({
         },
         ageMin: {
             type: Number,
+            min: 18,
             default: 18,
         },
         ageMax: {
@@ -85,6 +86,8 @@ const userSchema = new mongoose.Schema({
         },
     }
 });
+
+userSchema.index({ location: "2dsphere" });
 
 userSchema.pre("save", async function () {
     if (this.isModified("password")) {

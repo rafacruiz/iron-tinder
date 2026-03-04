@@ -48,3 +48,12 @@ export async function verify(req, res) {
 
     res.json(sessionUser);
 }
+
+export async function profile(req, res) {
+    
+    Object.assign(req.session.user, req.body);
+
+    await req.session.user.save();
+
+    res.json(req.session.user);
+}
