@@ -85,3 +85,23 @@ export async function suggestions(req, res) {
 
     res.json(suggestions);
 }
+
+export async function like(req, res) {
+    
+    const userLike = req.params.userId;
+
+    req.session.user.likedUsers.push(userLike);
+
+    Object.assign(req.session.user);
+
+    await req.session.user.save();
+
+    const userTarget = await User.findById(userLike);
+
+    if (userTarget.likedUsers.includes(req.session.user.id)) {
+        console.log('Match!!');
+        // crear documento Match
+    } 
+
+    res.json(req.session.user);
+}

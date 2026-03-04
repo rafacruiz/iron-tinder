@@ -15,6 +15,8 @@ router.patch('/profile', User.update);
 
 router.get('/suggestions', User.suggestions);
 
+router.post('/likes/:userId', User.like);
+
 router.use((req, res) => {
   throw new createHttpError(404, "Route Not Found");
 });

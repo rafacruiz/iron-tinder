@@ -1,6 +1,7 @@
 
 import mongoose from "mongoose";
 import "../config/db.config.js";
+import bcrypt from 'bcrypt';
 import { faker } from "@faker-js/faker";
 
 import User from "../models/user.model.js";
@@ -23,23 +24,25 @@ async function seed() {
 
   const usersData = [];
 
-    for (let i = 0; i < 50; i++) {
-        const gender = faker.helpers.arrayElement(['male', 'female']);
-        const firstName = faker.person.firstName(gender);
-        const lastName = faker.person.lastName();
+  const hashedPassword = await bcrypt.hash('123', 10);
 
-        usersData.push({
-            email: faker.internet.email({ firstName, lastName }).toLowerCase(),
-            password: PASSWORD,
-            names: `${firstName} ${lastName}`,
-            age: faker.number.int({ min: 18, max: 60 }),
-            gender,
-        });
-    }
+  for (let i = 0; i < 50; i++) {
+      const gender = faker.helpers.arrayElement(['male', 'female']);
+      const firstName = faker.person.firstName(gender);
+      const lastName = faker.person.lastName();
 
-    await User.insertMany(usersData);
+      usersData.push({
+          email: faker.internet.email({ firstName, lastName }).toLowerCase(),
+          password: hashedPassword,
+          names: `${firstName} ${lastName}`,
+          age: faker.number.int({ min: 18, max: 60 }),
+          gender,
+      });
+  }
 
-    console.log(`[OK] ${usersData.length} users created`);
+  await User.insertMany(usersData);
+
+  console.log(`[OK] ${usersData.length} users created`);
 }
 
 seed().catch((error) => {
