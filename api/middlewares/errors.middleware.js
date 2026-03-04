@@ -1,7 +1,28 @@
-// TODO: Export a function errorHandler(err, req, res, next)
-//   Handle these error types:
-//   - ValidationError (Mongoose) → 400
-//   - HTTP errors (from http-errors) → use err.status
-//   - CastError (Mongoose, invalid ObjectId) → 404
-//   - Duplicate key (E11000) → 409
-//   - Everything else → 500
+
+import createHttpError from "http-errors";
+
+export const errorHandler = (err, req, res, next) => {
+
+    if (err.name === 'ValidationError') {
+        res.status(400).json(err.errors)
+        return;
+    }
+
+    if (err.status) {
+        res.status(err.status).json({ message: err.message });
+        return;
+    }
+
+    if (err.name === 'CastError') {
+        res.status(404).json({ message: 'Resource not found' });
+        return;
+    }
+
+    if (err.message?.includes('E11000')) {
+        res.status(409).json({ message: 'Resource duplicate' });
+        return;
+    }
+
+    console.error('Error internal server');
+    res.status(500).json({ message: 'Error internal server' });
+}

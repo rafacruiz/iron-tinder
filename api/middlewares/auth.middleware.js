@@ -1,7 +1,32 @@
-// TODO: Import createHttpError and the Session model
-// TODO: Export an async function checkAuth(req, res, next)
-//   - Skip auth for public routes (POST /api/auth/signup and POST /api/auth/login)
-//   - Extract sessionId from the cookie header
-//   - Find the session in the database and populate the user
-//   - Attach the session to req.session
-//   - If no valid session, throw a 401 error
+
+import createHttpError from "http-errors";
+import Session from "../models/session.model.js";
+
+export async function checkAuth(req, res, next) {
+
+    if (req.method === 'POST' && req.path === '/api/auth/signup') {
+        next();
+        return;
+    }
+
+    if (req.method === 'POST' && req.path === '/api/auth/login') {
+        next();
+        return;
+    }
+
+    const sessionId = req.headers.cookie?.match(/sessionId=([^;]+)/)?.[1];
+
+    if (!sessionId) {
+        throw createHttpError(401, 'unauthorized');
+    }
+
+    const session = await Session.findById(sessionId).populate('user');
+
+    if (!session) {
+        throw createHttpError(401, 'unauthorized');
+    }
+
+    req.session = session;
+
+    next();
+}

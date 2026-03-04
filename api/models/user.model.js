@@ -56,9 +56,14 @@ const userSchema = new mongoose.Schema({
             default: 50,
         }
     },
-    location: { 
-        type: "Point", 
-        coordinates: [lng, lat] 
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+        },
+        coordinates: {
+            type: [Number],
+        }
     },
     likedUsers: [{
         type: mongoose.Types.ObjectId,
@@ -76,18 +81,19 @@ const userSchema = new mongoose.Schema({
         virtuals: true,
         transform: function (doc, ret) {
             delete ret._id;
+            delete ret.password;
         },
     }
 });
 
 userSchema.pre("save", async function () {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
 });
 
 userSchema.methods.checkPassword = function (passwordToCheck) {
-  return bcrypt.compare(passwordToCheck, this.password);
+    return bcrypt.compare(passwordToCheck, this.password);
 };
 
 const User = mongoose.model('User', userSchema);

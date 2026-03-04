@@ -1,3 +1,9 @@
-// TODO: Export a function clearBody(req, res, next)
-//   - Delete req.body._id, req.body.createdAt, req.body.updatedAt
-//   - Call next()
+
+export function clearBody(req, res, next) {
+    
+    delete req.body?._id;
+    delete req.body?.createdAt;
+    delete req.body?.updatedAt;
+
+    next();
+}

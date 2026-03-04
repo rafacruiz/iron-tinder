@@ -1,15 +1,24 @@
 import { Router } from "express";
 import createHttpError from "http-errors";
 
+import * as User from '../controllers/auth.controller.js';
+
+const router = Router();
+
+router.post('/auth/signup', User.signup);
+router.post('/auth/login', User.login);
+router.delete('/auth/logout', User.logout);
+router.get('/auth/verify', User.verify);
+
+router.use((req, res) => {
+  throw new createHttpError(404, "Route Not Found");
+});
+
+export default router;
+
 // TODO: Import Router from express
 // TODO: Import your controllers
 // TODO: Define all API routes:
-//
-//   Auth:
-//     POST   /auth/signup
-//     POST   /auth/login
-//     DELETE  /auth/logout
-//     GET    /auth/verify
 //
 //   Profile:
 //     GET    /profile
