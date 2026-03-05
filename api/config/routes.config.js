@@ -19,6 +19,8 @@ router.post('/likes/:userId', User.like);
 
 router.post('/pass/:userId', User.pass);
 
+router.get('/matches', User.matches);
+
 router.use((req, res) => {
   throw new createHttpError(404, "Route Not Found");
 });

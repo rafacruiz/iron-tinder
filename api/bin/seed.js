@@ -34,7 +34,7 @@ async function seed() {
       usersData.push({
           email: faker.internet.email({ firstName, lastName }).toLowerCase(),
           password: hashedPassword,
-          names: `${firstName} ${lastName}`,
+          name: `${firstName} ${lastName}`,
           age: faker.number.int({ min: 18, max: 60 }),
           gender,
       });

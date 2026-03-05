@@ -82,7 +82,7 @@ export async function suggestions(req, res) {
         criteria.gender = user.preferences.gender;
     }
 
-    const suggestions = await User.find(criteria);
+    const suggestions = await User.find(criteria, "name age pics bio gender");
 
     res.json(suggestions);
 }
@@ -90,9 +90,9 @@ export async function suggestions(req, res) {
 export async function like(req, res) {
     
     const userLike = req.params.userId;
-    const userCurrent = req.session.user;
+    const userCurrent = req.session.user.id;
 
-    if (userCurrent.id.toString() === userLike.toString()) 
+    if (userCurrent.toString() === userLike.toString()) 
         throw createError(400, "You cannot pass yourself");
 
     const user = await User.findByIdAndUpdate(userCurrent, { $addToSet: { likedUsers: userLike } });
@@ -101,9 +101,9 @@ export async function like(req, res) {
 
     const userTarget = await User.findById(userLike);
 
-    if (userTarget.likedUsers.includes(userCurrent.id)) {
-        const match = await Match.create({
-            users: [userLike, userCurrent.id]
+    if (userTarget.likedUsers.includes(userCurrent)) {
+        await Match.create({
+            users: [userLike, userCurrent]
         });
 
         res.json({
@@ -122,9 +122,9 @@ export async function like(req, res) {
 
 export async function pass(req, res) {
     const userLike = req.params.userId;
-    const userCurrent = req.session.user;
+    const userCurrent = req.session.user.id;
 
-    if (userCurrent.id.toString() === userLike.toString()) 
+    if (userCurrent.toString() === userLike.toString()) 
         throw createError(400, "You cannot pass yourself");
 
     const user = await User.findByIdAndUpdate(userCurrent, { $addToSet: { passedUsers: userLike } });
@@ -132,4 +132,17 @@ export async function pass(req, res) {
     if (!user) throw createError(404, 'User Not Found');
 
     res.json({ 'passed': true });
+}
+
+export async function matches(req, res) {
+
+    const matches = await Match
+        .find({ users: req.session.user.id })
+        .populate("users", "name age pics bio gender");
+
+    const result = matches
+        .map(match => match.users
+        .find(user => user.id !== req.session.user.id));
+
+    res.json(result);
 }
