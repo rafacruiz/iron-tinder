@@ -1,6 +1,7 @@
 
 import User from '../models/user.model.js';
 import Session from '../models/session.model.js';
+import Match from '../models/match.model.js';
 
 import createError from 'http-errors';
 
@@ -89,19 +90,46 @@ export async function suggestions(req, res) {
 export async function like(req, res) {
     
     const userLike = req.params.userId;
+    const userCurrent = req.session.user;
 
-    req.session.user.likedUsers.push(userLike);
+    if (userCurrent.id.toString() === userLike.toString()) 
+        throw createError(400, "You cannot pass yourself");
 
-    Object.assign(req.session.user);
+    const user = await User.findByIdAndUpdate(userCurrent, { $addToSet: { likedUsers: userLike } });
 
-    await req.session.user.save();
+    if (!user) throw createError(404, 'User Not Found');
 
     const userTarget = await User.findById(userLike);
 
-    if (userTarget.likedUsers.includes(req.session.user.id)) {
-        console.log('Match!!');
-        // crear documento Match
+    if (userTarget.likedUsers.includes(userCurrent.id)) {
+        const match = await Match.create({
+            users: [userLike, userCurrent.id]
+        });
+
+        res.json({
+            'liked': true,
+            'match': true,
+            'matchId': userLike
+        });
+        return;
     } 
 
-    res.json(req.session.user);
+    res.json({ 
+        'liked': true, 
+        'match': false 
+    });
+}
+
+export async function pass(req, res) {
+    const userLike = req.params.userId;
+    const userCurrent = req.session.user;
+
+    if (userCurrent.id.toString() === userLike.toString()) 
+        throw createError(400, "You cannot pass yourself");
+
+    const user = await User.findByIdAndUpdate(userCurrent, { $addToSet: { passedUsers: userLike } });
+
+    if (!user) throw createError(404, 'User Not Found');
+
+    res.json({ 'passed': true });
 }

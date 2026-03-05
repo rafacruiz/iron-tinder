@@ -17,6 +17,8 @@ router.get('/suggestions', User.suggestions);
 
 router.post('/likes/:userId', User.like);
 
+router.post('/pass/:userId', User.pass);
+
 router.use((req, res) => {
   throw new createHttpError(404, "Route Not Found");
 });
@@ -26,16 +28,6 @@ export default router;
 // TODO: Import Router from express
 // TODO: Import your controllers
 // TODO: Define all API routes:
-//
-//   Profile:
-//     PATCH  /profile
-//
-//   Suggestions:
-//     GET    /suggestions
-//
-//   Likes:
-//     POST   /likes/:userId
-//     POST   /pass/:userId
 //
 //   Matches:
 //     GET    /matches
