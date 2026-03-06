@@ -1,11 +1,52 @@
-// TODO: Import createContext, useContext, useEffect, useState from react
-// TODO: Import useNavigate, useLocation from react-router-dom
-// TODO: Import verify and login from your api-service
 
-// TODO: Create AuthContext with createContext
-// TODO: Export AuthContextProvider component:
-//   - On mount, call verify() to check for existing session
-//   - If no session, redirect to /login
-//   - Provide { user, userLogin, userSignup, userLogout } through context
-//   - While verifying, render nothing (avoid content flash)
-// TODO: Export useAuth() hook to consume the context
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import * as ServicesApi from '../services/api-service';
+
+const AuthContext = createContext();
+
+function AuthContextProvider ({ children }) {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetch = async () => {
+            try {
+                const user = await ServicesApi.verify();
+                setUser(user); 
+            } catch (error) {
+                navigate('/login');
+            }
+        }
+
+        fetch();
+    }, []);
+
+    const login = async (email, password) => {
+        const user = await ServicesApi.login(email, password);
+        setUser(user);
+    }
+
+    const logout = async () => {
+        await ServicesApi.logout();
+        setUser(null);
+        navigate('/login');
+    }
+
+    if (user === null &&
+        location.pathname !== "/login" &&
+        location.pathname !== "/signup"
+    ) {
+        return <></>;
+    }
+
+    return (
+        <AuthContext.Provider value={{ user, login, logout }}>
+            { children }
+        </AuthContext.Provider>
+    );
+}
+
+export default AuthContextProvider;
+export const useAuth = () => useContext(AuthContext);
