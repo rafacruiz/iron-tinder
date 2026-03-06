@@ -20,11 +20,11 @@ export async function login(req, res) {
 
     const user = await User.findOne({ email });
 
-    if (!user) throw createError(401, 'User not found');
+    if (!user) throw createError(401, 'Invalid email or password');
 
     const match = await user.checkPassword(password);
 
-    if (!match) throw createError(401, 'invalid password');
+    if (!match) throw createError(401, 'Invalid email or password');
 
     const session = await Session.create({ user: user.id });
 

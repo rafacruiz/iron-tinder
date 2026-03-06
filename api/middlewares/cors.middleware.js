@@ -1,7 +1,18 @@
-// TODO: Export a function cors(req, res, next)
-//   - Set Access-Control-Allow-Origin to process.env.CORS_ORIGIN
-//   - Set Access-Control-Allow-Credentials to "true" (needed for cookies)
-//   - Set Access-Control-Allow-Headers to "content-type"
-//   - Set Access-Control-Allow-Methods to "GET,POST,PATCH,DELETE,OPTIONS"
-//   - For OPTIONS requests (preflight), respond immediately with res.end()
-//   - Otherwise, call next()
+
+export function cors(req, res, next) {
+  
+  res.set("Access-Control-Allow-Origin", process.env.CORS_ORIGIN);
+
+  res.set("Access-Control-Allow-Credentials", "true");
+
+  res.set("Access-Control-Allow-Headers", "content-type");
+
+  res.set("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
+
+  if (req.method === "OPTIONS") {
+    res.end();
+    return;
+  }
+
+  next();
+}

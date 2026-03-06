@@ -17,13 +17,13 @@ export async function checkAuth(req, res, next) {
     const sessionId = req.headers.cookie?.match(/sessionId=([^;]+)/)?.[1];
 
     if (!sessionId) {
-        throw createHttpError(401, 'unauthorized');
+        throw createHttpError(401, 'Unauthorized');
     }
 
     const session = await Session.findById(sessionId).populate('user');
 
     if (!session) {
-        throw createHttpError(401, 'unauthorized');
+        throw createHttpError(401, 'Unauthorized');
     }
 
     req.session = session;
