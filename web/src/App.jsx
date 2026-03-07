@@ -2,7 +2,7 @@ import "./App.css";
 
 import { Routes, Route } from 'react-router';
 
-import { HomePage, LoginPage } from "./pages";
+import { HomePage, LoginPage, MatchPage, ProfilePage } from "./pages";
 
 // TODO: Import Routes, Route from react-router-dom
 // TODO: Import your page components (LoginPage, SignupPage, ProfilePage, etc.)
@@ -25,6 +25,14 @@ function App() {
       <Route 
         path='/' 
         element={ <HomePage /> } />
+      
+      <Route 
+        path='/profile' 
+        element={ <ProfilePage /> } />
+      
+      <Route 
+        path='/match' 
+        element={ <MatchPage /> } />
     </Routes>
   </>);
 }

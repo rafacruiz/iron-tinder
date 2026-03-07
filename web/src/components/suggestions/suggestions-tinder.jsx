@@ -56,8 +56,16 @@ function Suggestions() {
     return (
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6">
 
-            {!suggestions || !suggestions.length 
-            ? (<> No Suggestions </>) 
+            {!suggestions || !suggestions.length ? (
+                <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+                    <div className="text-6xl mb-4 animate-pulse">😔</div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                        No More Suggestions
+                    </h2>
+                    <p className="text-gray-500 text-sm max-w-xs">
+                        Looks like you've swiped through all profiles for now. Check back later or update your preferences to see more matches!
+                    </p>
+                </div>) 
             : (
                 <>
                     {feedback && (
